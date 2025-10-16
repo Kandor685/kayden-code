@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bouncing ball</title>
+	<style>
+        body
+        {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+		#myCanvas
+		{
+			border:1px solid #c3c3c3;
+		}
+    </style>
+	<script>
+	//set up some global constants and variables
+	const WIDTH = 600;
+	const HEIGHT = 400;
+	const BALLSIZE = 15;
+	const BACKGROUNDCOLOUR = "#e0e0e0";
+	const BALLCOLOUR = "blue";
+	const MSDELAY = 20;
+	const BALLXSTART = 150;
+	const BALLYSTART = 100;
+	var dX = 4; // delta (change in) X
+	var dY = 4; // delta (change in) Y
+	var canvas;
+	var ctx;
+	var ballX; //the ball X coordinate
+	var ballY; //the ball Y coordinate
+	var running;
+
+	//Get things set up. This is run once when the page loads
+	function setup()
+	{
+		canvas = document.getElementById('myCanvas');
+		canvas.width = WIDTH;
+		canvas.height = HEIGHT;
+		ctx = canvas.getContext('2d');
+		reset();
+	}
+	
+	//Used by setup() and the reset button
+	function reset()
+	{
+		//draw the background to the canvas
+		ctx.fillStyle = BACKGROUNDCOLOUR;
+		ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+		
+		running = false;
+	}
+	
+	//Used by the go button
+	function go()
+	{
+		running = true;
+		moveBall();
+	}
+
+	//This moves the ball, and is used by go(). It also calls itself with setTimeout()
+	function moveBall()
+	{
+		if (running)
+		{
+
+
+			setTimeout(moveBall, MSDELAY);
+		}
+	}
+
+	</script>
+</head>
+<body onload="setup()">
+	<h1>Bouncing ball</h1>
+	<canvas id="myCanvas"></canvas><br>
+		<button type="button" onclick="reset()">Reset</button> &nbsp; <button type="button" onclick="go()">Go</button>
+</body>
+</html>
