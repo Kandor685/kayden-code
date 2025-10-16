@@ -1,81 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Bouncing ball</title>
-	<style>
+    <title>Bouncing ball</title>
+    <style>
         body
         {
             font-family: Arial, Helvetica, sans-serif;
         }
-		#myCanvas
-		{
-			border:1px solid #c3c3c3;
-		}
+        #myCanvas
+        {
+            border:1px solid #c3c3c3;
+        }
     </style>
-	<script>
-	//set up some global constants and variables
-	const WIDTH = 600;
-	const HEIGHT = 400;
-	const BALLSIZE = 15;
-	const BACKGROUNDCOLOUR = "#e0e0e0";
-	const BALLCOLOUR = "blue";
-	const MSDELAY = 20;
-	const BALLXSTART = 150;
-	const BALLYSTART = 100;
-	var dX = 4; // delta (change in) X
-	var dY = 4; // delta (change in) Y
-	var canvas;
-	var ctx;
-	var ballX; //the ball X coordinate
-	var ballY; //the ball Y coordinate
-	var running;
-
-	//Get things set up. This is run once when the page loads
-	function setup()
-	{
-		canvas = document.getElementById('myCanvas');
-		canvas.width = WIDTH;
-		canvas.height = HEIGHT;
-		ctx = canvas.getContext('2d');
-		reset();
-	}
-	
-	//Used by setup() and the reset button
-	function reset()
-	{
-		//draw the background to the canvas
-		ctx.fillStyle = BACKGROUNDCOLOUR;
-		ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-		
-		running = false;
-	}
-	
-	//Used by the go button
-	function go()
-	{
-		running = true;
-		moveBall();
-	}
-
-	//This moves the ball, and is used by go(). It also calls itself with setTimeout()
-	function moveBall()
-	{
-		if (running)
-		{
-
-
-			setTimeout(moveBall, MSDELAY);
-		}
-	}
-
-	</script>
+    <script>
+    //set up some global constants and variables
+    const WIDTH = 600;
+    const HEIGHT = 400;
+    const BALLSIZE = 15;
+    const BACKGROUNDCOLOUR = "#e0e0e0";
+    const BALLCOLOUR = "blue";
+    const MSDELAY = 20;
+    const BALLXSTART = 150;
+    const BALLYSTART = 100;
+    var dX = 4; // delta (change in) X
+    var dY = 4; // delta (change in) Y
+    var canvas;
+    var ctx;
+    var ballX; //the ball X coordinate
+    var ballY; //the ball Y coordinate
+    var running;
+    var upDownHit;
+    var sideHit;
+    var cornerHit;
+ 
+    //Get things set up. This is run once when the page loads
+    function setup()
+    {
+        canvas = document.getElementById('myCanvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+        ctx = canvas.getContext('2d');
+        reset();
+    }
+   
+    //Used by setup() and the reset button
+    function reset()
+    {
+        //draw the background to the canvas
+        ctx.fillStyle = BACKGROUNDCOLOUR;
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        //Set the x and y coordinates
+        ballX = BALLXSTART;
+        ballY = BALLYSTART;
+        //Draw the ball
+        ctx.fillStyle = BALLCOLOUR;
+        ctx.fillRect(ballX, ballY, BALLSIZE, BALLSIZE);
+        // Reset counters
+        upDownHit = 0;
+        sideHit = 0;
+        cornerHit = 0;
+ 
+       
+        running = false;
+    }
+   
+    //Used by the go button
+    function go()
+    {
+        running = true;
+        moveBall();
+    }
+ 
+    //This moves the ball, and is used by go(). It also calls itself with setTimeout()
+    function moveBall()
+    {
+        if (running)
+        {
+            //erase ball at current position
+            ctx.fillStyle = BACKGROUNDCOLOUR;
+            ctx.fillRect(ballX, ballY, BALLSIZE, BALLSIZE);
+            //move ball with delta x and delta y
+            ballX = ballX + dX;
+            ballY = ballY + dY;
+            //bottom edge detect
+            if (ballY + BALLSIZE >= HEIGHT)
+            {
+                dY = -dY;
+                upDownHit = upDownHit + 1;
+            }
+            // right edge detect
+            if (ballX + BALLSIZE >= WIDTH)
+            {
+                dX = -dX;
+                sideHit = sideHit + 1;
+            }
+            // left edge detect
+            if (ballX <= 0)
+            {
+                dX = -dX;
+                sideHit = sideHit + 1;
+            }
+            // top edge detect
+            if (ballY <= 0)
+            {
+                dY = -dY;
+                upDownHit = upDownHit + 1;
+            }
+           
+            document.getElementById("sideCounter").innerHTML = sideHit;
+            document.getElementById("upDownCounter").innerHTML = upDownHit;
+            //redraw the box at the new coordinates
+            ctx.fillStyle = BALLCOLOUR;
+            ctx.fillRect(ballX, ballY, BALLSIZE, BALLSIZE);
+ 
+            setTimeout(moveBall, MSDELAY);
+        }
+    }
+ 
+    </script>
 </head>
 <body onload="setup()">
-	<h1>Bouncing ball</h1>
-	<canvas id="myCanvas"></canvas><br>
-		<button type="button" onclick="reset()">Reset</button> &nbsp; <button type="button" onclick="go()">Go</button>
+    <h1>Bouncing ball</h1>
+    <canvas id="myCanvas"></canvas><br>
+        <button type="button" onclick="reset()">Reset</button> &nbsp; <button type="button" onclick="go()">Go</button>
+        <br>side hits: <span id="sideCounter"></span>
+        <br>Top and Bottom hits: <span id="upDownCounter"></span>
 </body>
 </html>
